@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Majestic Cuts - Admin Mobile App</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome Premium Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Shared Premium CSS -->
+    <link href="styles.css" rel="stylesheet">
+    
+    <style>
+        /* Mobile-app overrides for dark webview view */
+        body {
+            background-color: var(--dark-bg);
+            color: #F3F4F6;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            font-size: 0.95rem;
+        }
+        
+        /* Layout fills entire viewport */
+        .mobile-screen-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            height: 100vh;
+        }
+        
+        .mobile-screen-body {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 1.25rem;
+            padding-bottom: 80px; /* Space for bottom nav */
+            background-color: var(--dark-bg);
+        }
+        
+        /* Floating notification toast container */
+        #toastContainer {
+            top: 20px !important;
+            z-index: 1060;
+        }
+
+        /* Fixed bottom nav (dark style) */
+        .mobile-bottom-nav-dark {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background-color: #111827;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.25);
+        }
+        
+        .mobile-nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #9CA3AF;
+            border: none;
+            background: none;
+            font-size: 10px;
+            font-weight: 500;
+            padding: 6px 0;
+            width: 20%;
+            transition: var(--transition);
+        }
+        
+        .mobile-nav-btn i {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+        
+        .mobile-nav-btn.active {
+            color: var(--primary);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container position-fixed start-50 translate-middle-x p-3" id="toastContainer"></div>
+
+    <!-- Main Container -->
+    <div class="mobile-screen-container">
+        
+        <!-- Phone Viewport Screen -->
+        <div class="mobile-screen-body" id="androidAdminScreen">
+            <!-- Dynamic Admin App Views Injected by JS -->
+        </div>
+        
+        <!-- Bottom Nav (Dark Mode) -->
+        <div class="mobile-bottom-nav-dark">
+            <button class="mobile-nav-btn active" onclick="navigateAndroidAdmin('home', this)">
+                <i class="fas fa-chart-pie"></i>
+                <span>Beranda</span>
+            </button>
+            <button class="mobile-nav-btn" onclick="navigateAndroidAdmin('booking', this)">
+                <i class="fas fa-calendar-check"></i>
+                <span>Booking</span>
+            </button>
+            <button class="mobile-nav-btn" onclick="navigateAndroidAdmin('antrean', this)">
+                <i class="fas fa-list-ol"></i>
+                <span>Antrean</span>
+            </button>
+            <button class="mobile-nav-btn" onclick="navigateAndroidAdmin('laporan', this)">
+                <i class="fas fa-receipt"></i>
+                <span>Laporan</span>
+            </button>
+            <button class="mobile-nav-btn" onclick="navigateAndroidAdmin('profil', this)">
+                <i class="fas fa-sliders-h"></i>
+                <span>Setel</span>
+            </button>
+        </div>
+        
+    </div>
+
+    <!-- Bootstrap 5 Bundle with Popper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Chart.js for Admin Report Miniature Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Firebase Compat SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
+    
+    <!-- Central Logic App -->
+    <script src="app.js"></script>
+    
+    <!-- Initializer Hook -->
+    <script>
+        // Custom mobile-app helper to switch button active classes on click
+        function navigateAndroidAdmin(tabId, btnEl) {
+            // Call original app.js function to swap view
+            if (typeof window.navigateAndroidAdminDirect === 'function') {
+                window.navigateAndroidAdminDirect(tabId);
+            } else {
+                // Fallback direct render if needed
+                store.activeAndroidAdminTab = tabId;
+                renderAndroidAdminScreenContent();
+            }
+            
+            // Toggle active classes on bottom nav buttons
+            if (btnEl) {
+                document.querySelectorAll('.mobile-nav-btn').forEach(btn => btn.classList.remove('active'));
+                btnEl.classList.add('active');
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            initDatabase();
+            bindEvents();
+            
+            // Set role to admin android app
+            store.role = "android-admin";
+            saveToLocalStorage();
+            
+            // Initialize Admin App Content
+            initAndroidAdminApp();
+        });
+    </script>
+</body>
+</html>

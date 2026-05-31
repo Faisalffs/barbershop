@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Pelanggan - Majestic Cuts Barbershop</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome Premium Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Typography & Custom Styles -->
+    <link href="../styles.css" rel="stylesheet">
+</head>
+<body style="background-color: var(--light-bg); min-height: 100vh;">
+
+    <!-- ======================================================== -->
+    <!-- MASTER DEMO BAR (DASHBOARD SWITCHER HUB)                 -->
+    <!-- ======================================================== -->
+    <div class="bg-black text-white py-2 px-3 border-bottom border-warning border-opacity-25 sticky-top" style="z-index: 1080; font-size: 0.85rem;">
+        <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-warning text-dark font-monospace fw-bold">DEMO BARBERSHOP HUB</span>
+                <span class="text-white-50 d-none d-md-inline" style="font-size:0.75rem;">Pilih platform simulasi:</span>
+            </div>
+            <div class="d-flex flex-wrap gap-1" id="masterDemoHubButtons">
+                <button class="btn btn-sm btn-outline-warning py-1 px-2 border-0" onclick="switchRole('public')" id="btnHub-public"><i class="fas fa-globe me-1"></i> Web Publik</button>
+                <button class="btn btn-sm btn-outline-warning py-1 px-2 border-0 active" onclick="switchRole('customer')" id="btnHub-customer"><i class="fas fa-user-tie me-1"></i> Web Pelanggan</button>
+                <button class="btn btn-sm btn-outline-warning py-1 px-2 border-0" onclick="switchRole('admin')" id="btnHub-admin"><i class="fas fa-shield-alt me-1"></i> Web Admin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- FLOATING DEMO ROLE SWITCHER                              -->
+    <!-- ======================================================== -->
+    <div class="role-switcher-widget" id="roleSwitcherWidget">
+        <button class="role-switcher-btn" id="roleSwitcherBtn" title="Ganti Peran Demonstrasi">
+            <i class="fas fa-user-cog"></i>
+        </button>
+        <div class="role-menu" id="roleMenu">
+            <h6 class="text-white border-bottom pb-2 mb-3 text-uppercase font-monospace" style="font-size:0.75rem; letter-spacing:1px;">Simulasi Peran</h6>
+            <a href="#" class="role-option" data-role="public">
+                <i class="fas fa-globe text-info"></i> Halaman Publik
+            </a>
+            <a href="#" class="role-option" data-role="customer">
+                <i class="fas fa-user-tie text-warning"></i> Portal Pelanggan (Web)
+            </a>
+            <a href="#" class="role-option" data-role="admin">
+                <i class="fas fa-shield-alt text-danger"></i> Panel Admin (Web)
+            </a>
+            <div class="mt-3 text-center">
+                <small class="text-white-50 font-monospace" style="font-size: 0.65rem;">Data disinkronkan via LocalStorage</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1100;" id="toastContainer"></div>
+
+    <!-- Navbar User Portal -->
+    <nav class="navbar navbar-expand-lg portal-navbar py-3 bg-white">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-4 d-flex align-items-center text-dark" href="#" onclick="showCustomerSection('cust-dashboard')">
+                <i class="fas fa-scissors me-2 text-warning"></i>MAJESTIC<span class="text-warning">PORTAL</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCustomerPortal">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCustomerPortal">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item">
+                        <a class="nav-link cust-nav-link active" href="#" data-target="cust-dashboard" onclick="showCustomerSection('cust-dashboard')">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link cust-nav-link" href="#" data-target="cust-booking" onclick="showCustomerSection('cust-booking')">Booking Baru</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link cust-nav-link" href="#" data-target="cust-antrean" onclick="showCustomerSection('cust-antrean')">Cek Antrean</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link cust-nav-link" href="#" data-target="cust-riwayat" onclick="showCustomerSection('cust-riwayat')">Riwayat</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link cust-nav-link" href="#" data-target="cust-reward" onclick="showCustomerSection('cust-reward')">Loyalty Reward</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="text-end d-none d-lg-block">
+                        <span class="fw-bold d-block text-dark small" id="custNavName">Ahmad Yani</span>
+                        <span class="badge bg-warning text-dark font-monospace" style="font-size:0.7rem;" id="custMembershipBadge">GOLD MEMBER</span>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=80&auto=format&fit=crop" class="rounded-circle cursor-pointer" style="width: 42px; height: 42px; object-fit: cover;" 
+                         onclick="showCustomerSection('cust-profil')">
+                    <button class="btn btn-outline-danger btn-sm" onclick="switchRole('public')">Keluar</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Body Portal -->
+    <main class="container py-4">
+        <!-- 2.1 TAB DASHBOARD -->
+        <div id="cust-dashboard" class="cust-section animate-slide">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="portal-welcome-banner mb-4">
+                        <h2 class="fw-bold mb-2 display-font" id="custDashboardWelcome">Selamat Datang, Pelanggan!</h2>
+                        <p class="mb-0 opacity-75">Tingkatkan terus frekuensi cukur Anda di Majestic Cuts dan kumpulkan poin loyalitas untuk mendapatkan layanan gratis & diskon eksklusif.</p>
+                    </div>
+                    
+                    <h4 class="mb-3 display-font">Booking Aktif / Mendatang</h4>
+                    <div id="custActiveBookingStatusCard">
+                        <!-- Injeksi JS -->
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="card premium-card p-4 mb-4" style="background: linear-gradient(135deg, #1E293B, #0F172A); color: white;">
+                        <h5 class="mb-3 font-monospace" style="letter-spacing:1px; color:#FBBF24;">LOYALTY STATS</h5>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <small class="text-white-50 d-block">Reward Poin Anda</small>
+                                <h2 class="fw-bold mb-0 font-monospace" id="custPointsDisplay">120 Poin</h2>
+                            </div>
+                            <i class="fas fa-gem fs-1 text-warning"></i>
+                        </div>
+                        <span class="badge bg-white text-dark mb-3" id="custMembershipDisplay">Membership: Gold</span>
+                        
+                        <div class="progress mb-2" style="height: 6px; border-radius:50px;">
+                            <div class="progress-bar bg-warning" id="custLoyaltyBar" style="width: 60%"></div>
+                        </div>
+                        <small class="text-white-50" id="custLoyaltyProgressText">120 / 300 Poin menuju Platinum</small>
+                    </div>
+
+                    <div class="card premium-card p-3">
+                        <h6 class="fw-bold text-dark mb-2"><i class="fab fa-whatsapp me-2 text-success"></i>Butuh Bantuan?</h6>
+                        <p class="text-muted small mb-2">Mengalami kendala saat reservasi atau butuh respon cepat dari admin barbershop?</p>
+                        <a href="https://wa.me/6281234567890" target="_blank" class="btn btn-success btn-sm w-100"><i class="fab fa-whatsapp me-1"></i>Chat WhatsApp Admin</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2.2 TAB BOOKING WIZARD -->
+        <div id="cust-booking" class="cust-section d-none animate-slide">
+            <div class="card premium-card p-4">
+                <!-- Step Indicator -->
+                <div class="wizard-step-indicator" id="wizardStepIndicator">
+                    <!-- Injeksi JS -->
+                </div>
+                
+                <!-- Wizard Main Container -->
+                <div class="py-4 border-top border-bottom my-3" id="wizardStepContent" style="min-height: 250px;">
+                    <!-- Injeksi JS -->
+                </div>
+                
+                <!-- Wizard Footer Navigation -->
+                <div class="d-flex justify-content-between pt-3">
+                    <button class="btn btn-outline-secondary px-4 d-none" id="wizardPrevBtn" onclick="wizardPrev()">
+                        <i class="fas fa-chevron-left me-1"></i> Kembali
+                    </button>
+                    <button class="btn btn-gold px-4 ms-auto" id="wizardNextBtn" onclick="wizardNext()">
+                        Lanjut <i class="fas fa-chevron-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2.3 TAB CEK ANTREAN -->
+        <div id="cust-antrean" class="cust-section d-none animate-slide">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="card premium-card p-4" id="custLiveQueueCard">
+                        <!-- Injeksi JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2.4 TAB RIWAYAT BOOKING -->
+        <div id="cust-riwayat" class="cust-section d-none animate-slide">
+            <h4 class="mb-4 display-font">Riwayat Booking Kunjungan Anda</h4>
+            <div class="row justify-content-center">
+                <div class="col-lg-8" id="custHistoryContainer">
+                    <!-- Injeksi JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 2.5 TAB REWARD & MEMBERSHIP -->
+        <div id="cust-reward" class="cust-section d-none animate-slide">
+            <div class="row">
+                <div class="col-md-6 mb-4 text-center">
+                    <h4 class="mb-3 display-font">Kartu Loyalitas Digital Anda</h4>
+                    <div class="member-card-wrapper">
+                        <div id="custDigitalMemberCard">
+                            <!-- Injeksi JS -->
+                        </div>
+                    </div>
+                    <p class="text-muted small">Tunjukkan kartu digital ini ke kasir Majestic Cuts setiap melakukan pembayaran untuk klaim pencatatan poin loyalitas Anda.</p>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <h4 class="mb-3 display-font">Level Keuntungan Membership</h4>
+                    <div class="card premium-card p-4 border-0 bg-light">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="badge bg-secondary p-2 me-3 fs-5"><i class="fas fa-shield-alt"></i></span>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Silver Tier (0 - 119 Poin)</h6>
+                                <small class="text-muted">Klaim 1x Free hair tonic setiap 5 kali potong rambut.</small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="badge bg-warning text-dark p-2 me-3 fs-5"><i class="fas fa-crown"></i></span>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Gold Tier (120 - 299 Poin)</h6>
+                                <small class="text-muted">Potongan diskon 10% setiap transaksi & prioritas booking antrean.</small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-dark border-warning p-2 me-3 fs-5" style="color:var(--primary);"><i class="fas fa-gem"></i></span>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Platinum Tier (300+ Poin)</h6>
+                                <small class="text-muted">Diskon 15% all service, minuman cold brew premium gratis setiap kunjungan.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2.6 TAB PROFIL SAYA -->
+        <div id="cust-profil" class="cust-section d-none animate-slide">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="card premium-card p-4">
+                        <h4 class="mb-4 display-font">Pengaturan Profil Akun</h4>
+                        <form id="customerProfileForm">
+                            <div class="mb-3 text-center">
+                                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=150&auto=format&fit=crop" class="rounded-circle mb-2" style="width: 100px; height: 100px; object-fit: cover;">
+                                <div class="small text-muted">Ahmad Yani (Pelanggan)</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Nama Lengkap</label>
+                                <input type="text" class="form-control" id="profileNameInput" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Nomor Handphone / WhatsApp</label>
+                                <input type="tel" class="form-control" id="profilePhoneInput" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Alamat Email</label>
+                                <input type="email" class="form-control" id="profileEmailInput" required>
+                            </div>
+                            <button type="submit" class="btn btn-gold w-100">Simpan Perubahan</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <!-- Modal: Sukses Booking -->
+    <div class="modal fade" id="bookingSuccessModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <div class="modal-body">
+                    <i class="fas fa-check-circle text-success display-1 mb-3"></i>
+                    <h3 class="fw-bold text-dark display-font mb-2">Reservasi Berhasil!</h3>
+                    <p class="text-muted">Nomor booking Anda adalah:</p>
+                    <h2 class="font-monospace text-warning fw-bold mb-3" style="color:var(--primary);" id="successBookingId">BKG-XXXXXX-XX</h2>
+                    <p class="small text-secondary mb-4">Detail jadwal reservasi Anda telah tercatat pada sistem kami. Silakan cek status antrean di halaman dashboard.</p>
+                    <button class="btn btn-gold w-100" data-bs-dismiss="modal">Tutup & Tinjau</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Beri Ulasan & Rating -->
+    <div class="modal fade" id="addReviewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-3">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-dark display-font">Berikan Ulasan Layanan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="text-muted small mb-4">Bagikan pengalaman berharga Anda setelah bercukur di Majestic Cuts Barbershop.</p>
+                    <form id="customerReviewForm">
+                        <div class="star-rating-selector mb-4">
+                            <input type="radio" id="star5" name="ratingStar" value="5"><label for="star5" title="Bintang 5"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star4" name="ratingStar" value="4"><label for="star4" title="Bintang 4"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star3" name="ratingStar" value="3"><label for="star3" title="Bintang 3"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star2" name="ratingStar" value="2"><label for="star2" title="Bintang 2"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star1" name="ratingStar" value="1"><label for="star1" title="Bintang 1"><i class="fas fa-star"></i></label>
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" id="reviewComment" rows="4" placeholder="Tuliskan ulasan potong rambut di sini..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-gold w-100">Kirim Ulasan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Upload Bukti Pembayaran -->
+    <div class="modal fade" id="customerPaymentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-3">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-dark display-font">Unggah Bukti Pembayaran</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small mb-3">Silakan transfer ke rekening <strong>BCA 123-456-789 a/n Majestic Cuts</strong> dan unggah foto bukti transfer di bawah ini.</p>
+                    <form id="paymentUploadForm" onsubmit="event.preventDefault(); submitPaymentReceipt();">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Pilih File Foto Transaksi</label>
+                            <input type="file" class="form-control" id="receiptFileInput" required accept="image/*">
+                        </div>
+                        <button type="submit" class="btn btn-gold w-100">Kirim Bukti Pembayaran</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Detail Bukti Cetak / Invoice -->
+    <div class="modal fade" id="invoicePrintModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-4" style="background:#fff; color:#000;">
+                <div id="printInvoiceArea" class="text-start">
+                    <div class="text-center border-bottom pb-3 mb-3">
+                        <h4 class="fw-bold mb-0">MAJESTIC CUTS BARBERSHOP</h4>
+                        <small class="text-muted">Jl. Veteran No. 42, Bandung | Telp: 081234567890</small>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="small">No. Transaksi:</span>
+                        <strong class="font-monospace small" id="invBookingId">BKG-XXXXXX</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="small">Tanggal:</span>
+                        <span class="small" id="invDate">2026-05-29</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="small">Pelanggan:</span>
+                        <span class="small fw-bold" id="invCustomer">Ahmad</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3 border-bottom pb-2">
+                        <span class="small">Stylist / Barber:</span>
+                        <span class="small" id="invBarber">Rian</span>
+                    </div>
+                    <h6 class="fw-bold small mb-2">RINCIAN TRANSAKSI:</h6>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="small" id="invServiceName">Classic Haircut</span>
+                        <span class="small fw-bold" id="invServicePrice">Rp 45.000</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2 text-success" id="invDiscountRow">
+                        <span class="small">Diskon Kupon (<span id="invCouponCode">BARBERMAJU</span>):</span>
+                        <span class="small fw-bold">- Rp <span id="invDiscountValue">0</span></span>
+                    </div>
+                    <div class="d-flex justify-content-between border-top pt-2 mt-3 fs-5 fw-bold">
+                        <span>TOTAL BAYAR:</span>
+                        <span id="invTotalPay">Rp 45.000</span>
+                    </div>
+                    <div class="text-center border-top pt-3 mt-4">
+                        <p class="small text-muted mb-0">Terima kasih atas kunjungan Anda!</p>
+                        <p class="small text-muted" style="font-size:0.65rem;">Silakan simpan struk ini sebagai bukti transaksi resmi.</p>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-0 mt-3 d-flex gap-2">
+                    <button type="button" class="btn btn-secondary flex-fill" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-gold flex-fill" onclick="window.print()"><i class="fas fa-print me-1"></i> Cetak Struk</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Firebase Compat SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
+    
+    <script src="../app.js"></script>
+</body>
+</html>
