@@ -121,6 +121,39 @@ h1, h2, h3, h4, h5, h6, .display-font {
     border-color: rgba(217, 119, 6, 0.3);
 }
 
+/* Counter Cards */
+.counter-card {
+    padding: 2rem 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+}
+.counter-card:hover {
+    border-color: rgba(217, 119, 6, 0.3);
+    transform: translateY(-4px);
+    background: rgba(217, 119, 6, 0.05);
+}
+.counter-icon {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+.counter-number {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 0.3rem;
+}
+.counter-label {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
 /* Customized Buttons */
 .btn-gold {
     background-color: var(--primary);
@@ -184,6 +217,32 @@ h1, h2, h3, h4, h5, h6, .display-font {
     transform: rotate(45deg) scale(1.1);
 }
 
+/* Floating WhatsApp Button */
+.float-wa {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    background: #25D366;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+    z-index: 1040;
+    text-decoration: none;
+    transition: var(--transition);
+}
+.float-wa:hover {
+    transform: scale(1.1);
+    background: #22C35E;
+    color: white;
+    box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5);
+}
+
 .role-menu {
     position: absolute;
     bottom: 75px;
@@ -238,13 +297,91 @@ h1, h2, h3, h4, h5, h6, .display-font {
     font-weight: 600;
 }
 
+/* Navbar Scroll Effect */
+.navbar {
+    transition: all 0.3s ease;
+}
+.navbar-scrolled {
+    padding-top: 0.6rem !important;
+    padding-bottom: 0.6rem !important;
+    background: rgba(11, 15, 25, 0.95) !important;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
 /* Landing Page Specific Styling */
 .landing-hero {
     min-height: 90vh;
-    background: linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.85)), url('https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=2074&auto=format&fit=crop') center/cover no-repeat;
+    background: linear-gradient(135deg, #0B0F19 0%, #1a1a2e 50%, #0B0F19 100%), url('https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=2074&auto=format&fit=crop') center/cover no-repeat;
+    background-blend-mode: overlay;
     display: flex;
     align-items: center;
     color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(217, 119, 6, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(251, 191, 36, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(217, 119, 6, 0.05) 0%, transparent 40%);
+    animation: heroGlow 8s ease-in-out infinite alternate;
+    z-index: 1;
+}
+
+@keyframes heroGlow {
+    0% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.02); }
+    100% { opacity: 0.6; transform: scale(1); }
+}
+
+.hero-particles {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.hero-particles .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(217, 119, 6, 0.4);
+    border-radius: 50%;
+    animation: floatParticle 6s ease-in-out infinite;
+}
+
+@keyframes floatParticle {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+    25% { transform: translateY(-20px) scale(1.5); opacity: 0.8; }
+    50% { transform: translateY(-10px) scale(1); opacity: 0.5; }
+    75% { transform: translateY(-30px) scale(0.8); opacity: 0.7; }
+}
+
+.hero-badge-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    display: inline-block;
+    animation: slide-in 0.6s ease forwards;
+    animation-delay: 0.3s;
+    opacity: 0;
+}
+
+.hero-badge-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(217, 119, 6, 0.15);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--primary);
 }
 
 .section-padding {
